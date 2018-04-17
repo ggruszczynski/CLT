@@ -1,37 +1,46 @@
 # CLT
 This repo contains matlab code for Classical Lamination Theory.
 
-example script
+Features:
+
+* micro mechanical model which represents the packing of the fibers inside the matrix. 
+* laminate composed of 2D plies - based on the classical lamination
+theory CLT
+* model of a thin-walled, closed-cross section, beam-like profiles.
+* thermal loads - work in progress
+
+
+sample script
 
 ```Matlab
 clc, clear %format long
 % format shortG 
 
-
 addpath(genpath('../MATERIAL_LIBRARY')); % Call genpath inside of addpath to add all subfolders
 addpath(genpath('../SOLVER'));
 addpath(genpath('../MEASURMENTS'));  % Call genpath inside of addpath to add all subfolders
 
+%% calculate ply properties
 % winding = Sample_Winding;
 % fiber = T700S;
 % resin = TGRADE_RED_COMP;
 % ply = Ply(winding,fiber,resin)
 
-valply = Validation_ply();
+%% or use ply with known properties
+ply = Validation_ply();
 
 % top-->bottom 
 % theta = [30,90,-30]; 
 % theta = [60,0,-60];
 % theta = [60,0,30];
 % theta = theta + 15
-% theta = [7,-7,-7,7];
 theta = [0,0,0,0,0,  0,0,0,0,0, 0,0,0,0,0, ];
 % theta = [45,-45,-45,45];
-%    theta = theta + 90
+% theta = theta + 90
   
 plies=[];
 for i=1:numel(theta)% all plies from the same material
-    plies = [plies, valply];
+    plies = [plies, ply];
 end
 
 composite = Composite(plies, theta, 'coupling')
@@ -42,13 +51,17 @@ inv(composite.ABD);
 r_mold = 0.025; %[m]
 length =  2.5; %[m] length
 pipe = Pipe(composite,r_mold,length)
-mass = length *pipe.area*pipe.rho %[kg]
+mass = length *pipe.area*pipe.rho; %[kg]
+
+price_kg = 60; %[eur/kg]
+price = mass*price_kg; %[eur]
 ```
 
 
-output
+output:
 
-```
+```Matlab
+
 composite = 
 
   Composite with properties:

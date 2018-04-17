@@ -41,15 +41,28 @@ classdef Composite
             
             this.Gxy = calcGxy(this);
             [this.Ex ,this.Ey] = calcExEy(this);
-    
+            
             this.CTE = calcCTE(this);
         end
         
         function CTE = calcCTE(this)
-              dTemp = 1; %[K]
-              [Nt_composite, Mt_composite] = calcThermalLoads( this.plies, this.angles_of_plies, this.thicknesses_of_plies, dTemp );
-              MidplaneThermalStrains = this.ABD \ [Nt_composite; Mt_composite];
-              CTE = MidplaneThermalStrains/dTemp;
+            i = 1;
+            is_cte_data_avail = true;
+            while (i < numel(this.plies) + 1)  && (is_cte_data_avail == true)
+                is_cte_data_avail = ~isempty(this.plies(i).ALFA12);
+                disp(i)
+                i = i+1;
+            end 
+              
+            if is_cte_data_avail
+            	dTemp = 1; %[K]
+            	[Nt_composite, Mt_composite] = calcThermalLoads( this.plies, this.angles_of_plies, this.thicknesses_of_plies, dTemp );
+            	MidplaneThermalStrains = this.ABD \ [Nt_composite; Mt_composite];
+            	CTE = MidplaneThermalStrains/dTemp;
+            else
+                disp('CTE data are not available')
+                CTE='CTE data are not available';
+            end
         end
         
         function Gxy = calcGxy(this)
@@ -66,7 +79,7 @@ classdef Composite
         function [MidplaneThermalStrains, Nt_composite, Mt_composite] = ThermalLoads(this, dTemp) % the composite is unrestrained = free deformation
               [Nt_composite, Mt_composite] = calcThermalLoads( this.plies, this.angles_of_plies, this.thicknesses_of_plies, dTemp );
               MidplaneThermalStrains = this.ABD \ [Nt_composite; Mt_composite];
-              
+              warning('Thermal loads are WIP - work in progress');
         end
 
     end

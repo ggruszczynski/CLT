@@ -1,4 +1,5 @@
 function [ Nt_composite, Mt_composite ] = calcThermalLoads(plies, theta, ply_thickness, dTemp )
+
 %%%%%%%%%%%%% units %%%%%%%%%%%%%%%
 % Principal directions:  C12 - Stiffnes matrix [Pa], S12 - compliance matrix [Pa]
 % theta % [deg] angle of rotation (0 degree is the principal direction), layers: top --> bottom
